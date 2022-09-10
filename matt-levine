@@ -1,0 +1,42 @@
+#!/usr/bin/env -S make -f
+
+m := .mobi
+to := fella@example.com
+rss := https://www.bloomberg.com/opinion/authors/ARbTQlRLRjE/matthew-s-levine.rss
+src := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
+
+all:
+include .download.mk
+
+.download.mk: rss.xml; ruby $(src)/download.rb $(m) < $< > $@
+rss.xml:; curl -sfL '$(rss)' > $@
+
+%.send: %.mobi
+ifndef catchup
+	echo hello | mailx -a $< -- $(to)
+endif
+	touch $@
+
+%.mobi: %.html; ebook-convert $< $@ > /dev/null
+%.html: %.raw; ruby $(src)/raw2html.rb < $< > $@
+
+define help :=
+To check for new articles, rm rss.xml
+
+m=$(m)
+    modus operandi: m=.mobi to create mobi files, with m=.send also email them
+to=$(to)
+    an address for m=.send
+catchup=1
+    (for m=.send only) record sending operations w/o sending anything
+endef
+
+help:; $(info $(help))@:
+
+clean:
+	find . -type f | grep -E '\.(html|mobi|send)$$' | xargs -r rm
+	rm .download.mk
+
+.PRECIOUS: %.html %.mobi
+.DELETE_ON_ERROR:
+mkdir = @mkdir -p $(dir $@)
