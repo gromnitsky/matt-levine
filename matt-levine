@@ -4,6 +4,7 @@ m := .mobi
 to := fella@example.com
 rss := https://www.bloomberg.com/opinion/authors/ARbTQlRLRjE/matthew-s-levine.rss
 src := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
+export mobi_maker := $(shell ebook-convert --version | ruby -pe '$$_=$$_.split(/[)(]/)[1]')
 
 all:
 include .download.mk
@@ -24,7 +25,8 @@ define help :=
 To check for new articles, rm rss.xml
 
 m=$(m)
-    modus operandi: m=.mobi to create mobi files, with m=.send also email them
+    modus operandi: m=.mobi to create mobi files, with m=.send also email them;
+    this gets saved in .download.mk
 to=$(to)
     an address for m=.send
 catchup=1

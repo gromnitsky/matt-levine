@@ -23,7 +23,7 @@ body = Nokogiri::HTML5.fragment body
 ['div', 'aside', 'script', 'meta'].each {|query| body.css(query).remove}
 
 def e s; CGI.escapeHTML s; end
-def calibre_version; `ebook-convert --version`.split(/[)(]/)[1]; end
+mobi_maker = ENV['mobi_maker']&.strip&.size.to_i > 0 ? ENV['mobi_maker'] : '?'
 
 puts <<END
 <!doctype html>
@@ -63,7 +63,7 @@ dt { font-style: italic; }
 <dt>Source:</dt><dd><a href="#{url}">#{url}</a></dd>
 <dt>Extracted:</dt><dd>#{DateTime.now}</dd>
 <dt>Engine implementation:</dt><dd>#{e RUBY_DESCRIPTION}</dd>
-<dt>Mobi producer:</dt><dd>#{e calibre_version}</dd>
+<dt>.mobi files maker:</dt><dd>#{e mobi_maker}</dd>
 </dl>
 </footer>
 END
