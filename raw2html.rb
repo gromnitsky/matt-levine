@@ -9,10 +9,10 @@ doc = Nokogiri::HTML STDIN.read
 data = doc.css('script[data-component-props="OverlayAd"]')&.inner_html
 abort 'no script tag' if data.size == 0
 
-article = JSON.parse data
+article = JSON.parse data rescue abort 'invalid json'
 author = article.dig("story", "authors", 0, "name") || abort('no author')
 date = article.dig("story", "publishedAt") || abort('no date')
-date = Date.parse date
+date = Date.parse date rescue abort $!
 title = article.dig("story", "headline") || abort('no title')
 summary = article.dig("story", "summary") || abort('no summary')
 url = article.dig("story", "url") || abort('no url')
