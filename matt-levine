@@ -18,7 +18,7 @@ ifndef catchup
 endif
 	touch $@
 
-%.mobi: %.html; ebook-convert $< $@ > /dev/null
+%.mobi: %.html; ebook-convert $< $@ --level1-toc //h:h2 > /dev/null
 %.html: %.raw; ruby $(src)/raw2html.rb < $< > $@
 
 define help :=
