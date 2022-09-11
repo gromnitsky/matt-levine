@@ -22,11 +22,11 @@ a script tag, hence this program:
 
 ## Usage
 
-Download a bunch of article to create .mobi files:
+Download a bunch of articles to create .mobi files:
 
 ~~~
-$ git clone ...
-$ mkdir -p matt-levine/_out
+$ git clone https://github.com/gromnitsky/matt-levine
+$ mkdir matt-levine/_out
 $ cd !$
 $ ../matt-levine
 ~~~
@@ -42,7 +42,7 @@ YYYY-MM-DD
 └── YYYY-MM-DD.raw
 ~~~
 
-Send a particular article to Kindle:
+Send a particular article to Kindle (requires mailx installed):
 
     ../matt-levine 2022-08-22/2022-08-22.send to=fella@example.com
 
@@ -51,7 +51,7 @@ Send a particular article to Kindle:
     $ rm rss.xml
     $ ../matt-levine catchup=1 m=send
 
-Run this a couple times a week to detect new article & automatically
+Run this a couple times a week to detect new articles & automatically
 send *only new ones* to Kindle:
 
     $ rm rss.xml; ../matt-levine m=send to=fella@example.com
