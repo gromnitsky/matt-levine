@@ -26,7 +26,7 @@ To check for new articles, rm rss.xml
 
 m=$(m)
     modus operandi: m=.mobi to create mobi files, with m=.send also email them;
-    this gets saved in .download.mk
+    this gets saved in .download.mk until you remove rss.xml
 to=$(to)
     an address for m=.send
 catchup=1

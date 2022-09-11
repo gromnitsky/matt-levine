@@ -1,6 +1,6 @@
 # matt-levine
 
-Read Matt Levine's Bloomberg column on Kindle.
+Read Matt Levine's Bloomberg column (ARbTQlRLRjE) on Kindle.
 
 Bloomberg RSSs contain no articles themselves, only links; raw html
 doesn't contain article text either--Bloomberg 'hides' it inside a
@@ -19,6 +19,7 @@ script tag, hence this program:
 * `gem install nokogiri`
 * curl
 * Calibre (`ebook-convert` in PATH)
+* mailx (optional)
 
 ## Usage
 

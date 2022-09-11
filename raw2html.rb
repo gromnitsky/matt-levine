@@ -25,6 +25,7 @@ body = Nokogiri::HTML5.fragment body
 def e s; CGI.escapeHTML s; end
 mobi_maker = ENV['mobi_maker']&.strip&.size.to_i > 0 ? ENV['mobi_maker'] : '?'
 
+# data from `article` comes already html escaped
 puts <<END
 <!doctype html>
 <title>#{title}</title>
@@ -61,8 +62,8 @@ dt { font-style: italic; }
 <hr>
 <dl>
 <dt>Source:</dt><dd><a href="#{url}">#{url}</a></dd>
-<dt>Extracted:</dt><dd>#{DateTime.now}</dd>
-<dt>Engine implementation:</dt><dd>#{e RUBY_DESCRIPTION}</dd>
+<dt>Generated:</dt><dd>#{DateTime.now}</dd>
+<dt>Generator environment:</dt><dd>#{e RUBY_DESCRIPTION}</dd>
 <dt>.mobi files maker:</dt><dd>#{e mobi_maker}</dd>
 </dl>
 </footer>
