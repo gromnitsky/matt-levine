@@ -2,9 +2,9 @@
 
 Read Matt Levine's Bloomberg column (ARbTQlRLRjE) on Kindle.
 
-Bloomberg RSSs contain no articles themselves, only links; raw html
-doesn't contain article text either--Bloomberg 'hides' it inside a
-script tag, hence this program:
+Bloomberg RSS feeds contain no articles themselves, only links; raw
+html doesn't contain article text either--Bloomberg 'hides' it inside
+a script tag, hence this program:
 
 1. fetches the RSS;
 2. fetches articles;
@@ -15,8 +15,7 @@ script tag, hence this program:
 ## Reqs
 
 * GNU Make
-* Ruby
-* `gem install nokogiri`
+* Ruby, `gem install nokogiri`
 * curl
 * Calibre (`ebook-convert` in PATH)
 * mailx (optional)
@@ -29,8 +28,10 @@ Download a bunch of article to create .mobi files:
 $ git clone ...
 $ mkdir -p matt-levine/_out
 $ cd !$
-$ ../matt-levine -j4
+$ ../matt-levine
 ~~~
+
+(In FreeBSD, run the last cmd as `gmake ../matt-levine`.)
 
 This creates multiple directories like so:
 
@@ -48,12 +49,12 @@ Send a particular article to Kindle:
 'Catch-up' with the articles:
 
     $ rm rss.xml
-    $ ../matt-levine catchup=1 m=.send
+    $ ../matt-levine catchup=1 m=send
 
 Run this a couple times a week to detect new article & automatically
-send only new ones to Kindle:
+send *only new ones* to Kindle:
 
-    $ rm rss.xml; ../matt-levine m=.send to=fella@example.com
+    $ rm rss.xml; ../matt-levine m=send to=fella@example.com
 
 ## License
 

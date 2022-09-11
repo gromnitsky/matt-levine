@@ -1,6 +1,6 @@
 #!/usr/bin/env -S make -f
 
-m := .mobi
+m := mobi
 to := fella@example.com
 rss := https://www.bloomberg.com/opinion/authors/ARbTQlRLRjE/matthew-s-levine.rss
 src := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
@@ -25,12 +25,15 @@ define help :=
 To check for new articles, rm rss.xml
 
 m=$(m)
-    modus operandi: m=.mobi to create mobi files, with m=.send also email them;
+    modus operandi: create mobi files, with m=send also email them;
     this gets saved in .download.mk until you remove rss.xml
+
+For m=send:
+
 to=$(to)
-    an address for m=.send
+    your Kindle address
 catchup=1
-    (for m=.send only) record sending operations w/o sending anything
+    record sending operations w/o sending anything
 endef
 
 help:; $(info $(help))@:
@@ -39,6 +42,5 @@ clean:
 	find . -type f | grep -E '\.(html|mobi|send)$$' | xargs -r rm
 	rm .download.mk
 
-.PRECIOUS: %.html %.mobi
 .DELETE_ON_ERROR:
 mkdir = @mkdir -p $(dir $@)
