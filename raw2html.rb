@@ -20,18 +20,46 @@ url = "https://www.bloomberg.com" + url
 body = article.dig("story", "body") || abort('no body')
 
 body = Nokogiri::HTML5.fragment body
-['div', 'aside', 'script', 'meta'].each {|query| body.css(query).remove}
+
+# 1. remove junk
+['div:not(.image):not(.lazy-img)', 'aside', 'script', 'meta']
+  .each {|query| body.css(query).remove}
+
+# 2. remove all classes from all nodes except for <a> & <ol> & some p
+body.traverse do |node|
+  if node.name == 'a' && node.classes.index('footnote')
+    node['class'] = 'footnote'
+  elsif node.name == 'ol' && node.classes.index('noscript-footnotes')
+    node['class'] = 'noscript-footnotes'
+  elsif node.name == 'p' && node.classes.index('news-rsf-contact-editor')
+    node['class'] = 'news-rsf-contact-editor'
+  else
+    node.remove_class
+  end
+end
+
+# 3. fix footnotes hierarchy
+body.css('ol.noscript-footnotes > li > p').each do |p|
+  span = p.parent.css('span').remove
+  a = p.parent.css('a[rel="footnote-ref"]').remove
+  a[0].inner_html = '⤶'
+  p.prepend_child span
+  p.add_child a
+end
 
 def e s; CGI.escapeHTML s; end
 mobi_maker = ENV['mobi_maker']&.strip&.size.to_i > 0 ? ENV['mobi_maker'] : '?'
 
 # data from `article` comes already html escaped
 puts <<END
-<!doctype html>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+<head>
 <title>#{title}</title>
-<meta name="author" content="#{author}">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="#{author}" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
 @media (min-width: 601px) {
   body {
@@ -48,18 +76,31 @@ footer {
   margin-top: 2em;
 }
 dt { font-style: italic; }
+
+p {
+  text-align: justify;
+}
+p:not([class]) {
+  margin: 0;
+  padding: 0;
+}
+p:not([class]) + p:not([class]) {
+  text-indent: 2em;
+}
+.lead { margin: 1em 0 }
+blockquote { margin: 1em 0 1em 1em; }
 </style>
+</head>
 
-<header>
+<body>
 <h1>#{title}</h1>
-#{summary}
+<div class="lead">#{summary}</div>
 <p><time datetime="#{date}">#{date}</time>, #{author}</p>
-</header>
 
-#{body}
+#{body.to_xml}
 
 <footer>
-<hr>
+<hr />
 <dl>
 <dt>Source:</dt><dd><a href="#{url}">#{url}</a></dd>
 <dt>Generated:</dt><dd>#{DateTime.now}</dd>
@@ -67,4 +108,7 @@ dt { font-style: italic; }
 <dt>.mobi files maker:</dt><dd>#{e mobi_maker}</dd>
 </dl>
 </footer>
+
+</body>
+</html>
 END
