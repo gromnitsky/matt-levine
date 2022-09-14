@@ -39,13 +39,26 @@ body.traverse do |node|
 end
 
 # 3. fix footnotes hierarchy
-body.css('ol.noscript-footnotes > li > p').each do |p|
-  span = p.parent.css('span').remove
-  a = p.parent.css('a[rel="footnote-ref"]').remove
-  a[0].inner_html = '⤶'
-  p.prepend_child span
-  p.add_child a
+footnotes = Nokogiri::XML::NodeSet.new Nokogiri::HTML5::Document.new
+ol = body.at_css('ol.noscript-footnotes')
+
+ol.css('li > p').each.with_index do |p, idx|
+  span = p.parent.css('span')
+  if span
+    span.remove
+    a = p.parent.at_css('a[rel="footnote-ref"]').remove
+    a.inner_html = '⤶'
+    p.prepend_child "#{idx+1}. "
+    p.prepend_child span
+    p.add_child a
+    p['class'] = 'footnote-text'
+  end
+  footnotes << p
 end
+
+ol.previous = '<div id="footnotes"><hr/></div>'
+ol.remove
+body.at_css('div#footnotes') << footnotes
 
 def e s; CGI.escapeHTML s; end
 mobi_maker = ENV['mobi_maker']&.strip&.size.to_i > 0 ? ENV['mobi_maker'] : '?'
@@ -73,7 +86,6 @@ p { text-align: justify; }
 footer {
   text-align: left;
   word-break: break-word;
-  margin-top: 2em;
 }
 dt { font-style: italic; }
 
@@ -95,7 +107,7 @@ blockquote { margin: 1em 0 1em 1em; }
 <body>
 <h1>#{title}</h1>
 <div class="lead">#{summary}</div>
-<p><time datetime="#{date}">#{date}</time>, #{author}</p>
+<p class="author"><time datetime="#{date}">#{date}</time>, #{author}</p>
 
 #{body.to_xml}
 
