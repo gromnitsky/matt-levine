@@ -41,23 +41,26 @@ end
 # 3. fix footnotes hierarchy
 footnotes = Nokogiri::XML::NodeSet.new Nokogiri::HTML5::Document.new
 ol = body.at_css('ol.noscript-footnotes')
-
-ol.css('li > p').each.with_index do |p, idx|
-  span = p.parent.css('span')
+ol.css('li').each.with_index do |li, idx|
+  span = li.css('span')
+  p = li.css('p')
   if span
     span.remove
-    a = p.parent.at_css('a[rel="footnote-ref"]').remove
-    a.inner_html = '⤶'
-    p.prepend_child "#{idx+1}. "
-    p.prepend_child span
-    p.add_child a
-    p['class'] = 'footnote-text'
+    p[0].prepend_child "#{idx+1}. "
+    p[0].prepend_child span
   end
-  footnotes << p
-end
 
-ol.previous = '<div id="footnotes"><hr/></div>'
-ol.remove
+  a = li.at_css('a[rel="footnote-ref"]')
+  if a
+    a.remove
+    a.inner_html = '⤶'
+    p[-1].add_child a if a
+  end
+
+  p[0]['class'] = 'footnote-text'
+  footnotes += p
+end
+ol.replace '<div id="footnotes"><hr/></div>'
 body.at_css('div#footnotes') << footnotes
 
 def e s; CGI.escapeHTML s; end
