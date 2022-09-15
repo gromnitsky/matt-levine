@@ -18,34 +18,7 @@ puts <<END
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
-@media (min-width: 601px) {
-  body {
-    width: 600px;
-    margin: 8px auto;
-  }
-}
-.footnote { vertical-align: super; }
-h1, h2, h3 { text-align: left; }
-p { text-align: justify; }
-footer {
-  text-align: left;
-  word-break: break-word;
-}
-dt { font-style: italic; }
-img { max-width: 100%; }
-
-p {
-  text-align: justify;
-}
-p:not([class]) {
-  margin: 0;
-  padding: 0;
-}
-p:not([class]) + p:not([class]) {
-  text-indent: 1em;
-}
-.lead { margin: 1em 0 }
-blockquote { margin: 1em 0 1em 1em; }
+#{File.read __dir__ + "/style.css"}
 </style>
 </head>
 
