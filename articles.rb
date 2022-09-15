@@ -27,6 +27,4 @@ items.each do |v|
   puts "\t$(mkdir)"
   puts "\t$(curl) '#{v[:link]}' > $@"
   puts "\t" + '@[ "`wc -c < $@`" -gt 200000 ] || { echo invalid responce; exit 1; }'
-  puts "\t" + "ruby $(src)/images.rb $@ > $@.mk"
-  puts "\t" + "$(MAKE) --no-print-directory -f $@.mk"
 end

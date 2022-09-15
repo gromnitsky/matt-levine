@@ -7,9 +7,9 @@ src := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 export mobi_maker := $(shell ebook-convert --version | ruby -pe '$$_=$$_.split(/[)(]/)[1]')
 
 all:
-include .download.mk
+include .articles.mk
 
-.download.mk: rss.xml; ruby $(src)/download.rb $(m) < $< > $@
+.articles.mk: rss.xml; ruby $(src)/articles.rb $(m) < $< > $@
 rss.xml:; curl -sfL '$(rss)' > $@
 
 %.send: %.mobi
@@ -19,14 +19,17 @@ endif
 	touch $@
 
 %.mobi: %.html; ebook-convert $< $@ --level1-toc //h:h2 > /dev/null
-%.html: %.raw; ruby $(src)/raw2html.rb < $< > $@
+%.html: %.raw
+	ruby $(src)/images.rb $< > $*.mk
+	$(MAKE) --no-print-directory -f $*.mk
+	ruby $(src)/raw2html.rb < $< > $@
 
 define help :=
 To check for new articles, rm rss.xml
 
 m=$(m)
     modus operandi: create mobi files, with m=send also email them;
-    this gets saved in .download.mk until you remove rss.xml
+    this gets saved in .articles.mk until you remove rss.xml
 
 For m=send:
 
@@ -40,7 +43,7 @@ help:; $(info $(help))@:
 
 clean:
 	find . -type f | grep -E '\.(html|mobi|send)$$' | xargs -r rm
-	rm .download.mk
+	rm .articles.mk
 
 .DELETE_ON_ERROR:
 mkdir = @mkdir -p $(dir $@)
