@@ -42,7 +42,7 @@ p:not([class]) {
   padding: 0;
 }
 p:not([class]) + p:not([class]) {
-  text-indent: 2em;
+  text-indent: 1em;
 }
 .lead { margin: 1em 0 }
 blockquote { margin: 1em 0 1em 1em; }
