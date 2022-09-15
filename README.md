@@ -2,6 +2,9 @@
 
 Read Matt Levine's Bloomberg column (ARbTQlRLRjE) on Kindle.
 
+<img style="width: 49%" src="https://sigwait.tk/~alex/junk/matt-levine.ss1.gif">
+<img style="width: 49%" src="https://sigwait.tk/~alex/junk/matt-levine.ss2.gif">
+
 Bloomberg RSS feeds contain no articles themselves, only links; raw
 html doesn't contain article text either--Bloomberg 'hides' it inside
 a script tag, hence this program:
