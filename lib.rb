@@ -87,3 +87,8 @@ def extract_img article
 end
 
 def abort s; Kernel.abort "#{$0} error: #{s}"; end
+
+def e s
+  n = Nokogiri::XML::Node.new "dummy", Nokogiri::XML::Document.new
+  n.encode_special_chars s
+end

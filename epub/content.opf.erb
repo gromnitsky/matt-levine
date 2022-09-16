@@ -1,34 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <package version="3.0" xmlns="http://www.idpf.org/2007/opf"
          unique-identifier="bookid">
-
 <%
   require 'time'
   require 'securerandom'
   require 'nokogiri'
+  require_relative '../lib'
 
   def mime file
     {
       '.png' => 'image/png',
       '.jpg' => 'image/jpeg',
+      '.xhtml' => 'application/xhtml+xml',
     }[File.extname file]
   end
-  doc = Nokogiri::HTML File.read xml
+  doc = Nokogiri::XML File.read xml
 %>
-
   <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
-    <dc:title><%= doc.css('h1').text %></dc:title>
-    <dc:creator id="author">Matt Levine</dc:creator>
+    <dc:title><%= e doc.at_css('title').text %></dc:title>
+    <dc:creator><%= e doc.at_css('meta[name=author]')['content'] %></dc:creator>
     <dc:language>en</dc:language>
     <dc:identifier id="bookid">urn:uuid:<%= SecureRandom.uuid %></dc:identifier>
-
-    <meta property="dcterms:modified"><%= DateTime.now.to_time.utc.iso8601 %></meta>
-    <meta refines="#author" property="file-as">Levine, Matt</meta>
+    <dc:date><%= e doc.at_css('time').text %></dc:date>
+    <meta property="dcterms:modified"><%= Time.now.utc.iso8601 %></meta>
   </metadata>
 
   <manifest>
-    <item id="article" href="<%= File.basename xml %>" media-type="application/xhtml+xml" />
-    <item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>
+    <item id="article" href="<%= File.basename xml %>" media-type="<%= mime xml  %>" />
+    <item id="nav" href="nav.xhtml" media-type="<%= mime 'nav.xhtml' %>" properties="nav"/>
 
     <% doc.css('img').each.with_index do |img, idx| %>
     <% file = img['src'] %>

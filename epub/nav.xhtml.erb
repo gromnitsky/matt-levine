@@ -13,19 +13,20 @@
 
 <%
   require 'nokogiri'
+  require_relative '../lib'
   doc = Nokogiri::HTML File.read xml
 %>
 
 <nav epub:type="toc">
   <h1>Contents</h1>
   <ol>
-    <% doc.css('h2').each.with_index do |h2,idx| %>
-    <li><a href="<%= "#{File.basename xml}#header-#{idx}" %>"><%= h2.text %></a></li>
+    <% doc.css('h2').each do |h2| %>
+    <li><a href="<%= [File.basename(xml), h2['id']].join(?#) %>"><%= e h2.text %></a></li>
     <% end %>
   </ol>
 </nav>
 
-<!-- Kindle: Menu → Go To  -->
+<!-- Kindle: Menu → Go to… -->
 <nav epub:type="landmarks" style="display: none">
   <ol>
     <li><a epub:type="toc" href="nav.xhtml">Contents</a></li>

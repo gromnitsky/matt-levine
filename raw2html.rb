@@ -1,15 +1,13 @@
-require 'cgi'
 require_relative './lib'
 
 article = extract(STDIN.read) rescue abort($!)
 bodyfix! article
 
-def e s; CGI.escapeHTML s; end
-
 # data from `article` comes already html escaped
 puts <<END
 <?xml version="1.0" encoding="utf-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:epub="http://www.idpf.org/2007/ops">
 <head>
 <title>#{article[:title]}</title>
 <meta name="author" content="#{article[:author]}" />
