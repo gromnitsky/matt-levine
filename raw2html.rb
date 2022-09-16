@@ -5,12 +5,10 @@ article = extract(STDIN.read) rescue abort($!)
 bodyfix! article
 
 def e s; CGI.escapeHTML s; end
-mobi_maker = ENV['mobi_maker']&.strip&.size.to_i > 0 ? ENV['mobi_maker'] : '?'
 
 # data from `article` comes already html escaped
 puts <<END
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
 <head>
 <title>#{article[:title]}</title>
@@ -35,7 +33,6 @@ puts <<END
 <dt>Source:</dt><dd><a href="#{article[:url]}">#{article[:url]}</a></dd>
 <dt>Generated:</dt><dd>#{DateTime.now}</dd>
 <dt>Generator environment:</dt><dd>#{e RUBY_DESCRIPTION}</dd>
-<dt>.mobi files maker:</dt><dd>#{e mobi_maker}</dd>
 </dl>
 </footer>
 

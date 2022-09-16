@@ -6,6 +6,13 @@
   require 'time'
   require 'securerandom'
   require 'nokogiri'
+
+  def mime file
+    {
+      '.png' => 'image/png',
+      '.jpg' => 'image/jpeg',
+    }[File.extname file]
+  end
   doc = Nokogiri::HTML File.read xml
 %>
 
@@ -22,6 +29,11 @@
   <manifest>
     <item id="article" href="<%= File.basename xml %>" media-type="application/xhtml+xml" />
     <item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>
+
+    <% doc.css('img').each.with_index do |img, idx| %>
+    <% file = img['src'] %>
+    <item id='<%= "file#{idx}" %>' href="<%= file %>" media-type="<%= mime file %>" />
+    <% end %>
   </manifest>
 
   <spine>

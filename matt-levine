@@ -1,30 +1,26 @@
 #!/usr/bin/env -S make -f
 
-m := mobi
-to := fella@example.com
+f := mobi
+to :=
 rss := https://www.bloomberg.com/opinion/authors/ARbTQlRLRjE/matthew-s-levine.rss
 src := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
-export mobi_maker := $(shell ebook-convert --version | ruby -pe '$$_=$$_.split(/[)(]/)[1]')
 
 all:
 include .articles.mk
 
-.articles.mk: rss.xml; ruby $(src)/articles.rb $(m) < $< > $@
+.articles.mk: rss.xml; ruby $(src)/articles.rb $(f) $(to) < $< > $@
 rss.xml:; curl -sfL '$(rss)' > $@
 
-%.send: %.mobi
-ifndef catchup
-	echo hello | mailx -a $< -- $(to)
-endif
-	touch $@
+%.send: %.mobi; $(send)
+%.send: %.epub; $(send)
 
 %.epub: %.html
 	erb xml=$< $(src)/epub/nav.xhtml.erb > $(dir $@)/nav.xhtml
 	erb xml=$< $(src)/epub/content.opf.erb > $(dir $@)/content.opf
-	zip -X0 -j $@ $(src)/epub/mimetype
+	zip -X0 -jq $@ $(src)/epub/mimetype
 	cp -r $(src)/epub/META-INF $(dir $@)
-	cd $(dir $@) && zip -r "$(CURDIR)/$@" META-INF nav.xhtml \
-		content.opf $(notdir $<)
+	cd $(dir $@) && zip -rq $(notdir $@) META-INF nav.xhtml content.opf $(notdir $<)
+	cd $(dir $@) && nokogiri -e 'puts $$_.css("img").map{|i| i["src"]}' $(notdir $<) | xargs zip -jq $(notdir $@)
 
 %.mobi: %.html; ebook-convert $< $@ --level1-toc //h:h2 > /dev/null
 %.html: %.raw
@@ -35,23 +31,20 @@ endif
 define help :=
 To check for new articles, rm rss.xml
 
-m=$(m)
-    modus operandi: create mobi files, with m=send also email them;
-    this gets saved in .articles.mk until you remove rss.xml
-
-For m=send:
-
+f=$(f)
+    output format: mobi, epub
 to=$(to)
-    your Kindle address
+    your Kindle address, if empty nothing gets send
 catchup=1
     record sending operations w/o sending anything
 endef
 
 help:; $(info $(help))@:
-
-clean:
-	find . -type f | grep -E '\.(html|mobi|send)$$' | xargs -r rm
-	rm .articles.mk
+clean:; find . -type f | grep -v '\.raw$$' | xargs -r rm
 
 .DELETE_ON_ERROR:
 mkdir = @mkdir -p $(dir $@)
+define send
+$(if $(catchup),,echo hello | mailx -a $< -- $(to))
+touch $@
+endef

@@ -24,7 +24,7 @@ def bodyfix! article
   body = article[:body]
 
   # 1. remove junk
-  ['div:not(.image):not(.lazy-img)', 'aside', 'script', 'meta']
+  ['div:not(.image):not(.lazy-img)', 'aside', 'script', 'meta', 'style']
     .each {|query| body.css(query).remove}
 
   # 2. remove all classes from all nodes except for <a> & <ol> & some p

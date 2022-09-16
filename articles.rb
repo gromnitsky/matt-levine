@@ -3,7 +3,9 @@
 require 'nokogiri'
 require 'date'
 
-ext = ['.html', '.mobi'] + (ARGV[0] == 'send' ? ['.send'] : [])
+abort "Usage: #{$0} output_format email < feed.xml" if ARGV.empty?
+
+ext = ['.html', ".#{ARGV[0]}"] + (ARGV[1]&.match(/@/) ? ['.send'] : [])
 
 doc = Nokogiri::XML STDIN.read
 items = doc.css('item').map do |n|
