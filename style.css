@@ -12,6 +12,7 @@ h2,
 h3 { text-align: left; }
 
 .footnote { vertical-align: super; }
+figure { margin: 1em 0; }
 
 footer {
   text-align: left;

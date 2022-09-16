@@ -14,16 +14,17 @@ rss.xml:; curl -sfL '$(rss)' > $@
 %.send: %.mobi; $(send)
 %.send: %.epub; $(send)
 
-%.epub: %.html
+%.epub: %.xhtml
 	erb xml=$< $(src)/epub/nav.xhtml.erb > $(dir $@)/nav.xhtml
 	erb xml=$< $(src)/epub/content.opf.erb > $(dir $@)/content.opf
+	-rm $@
 	zip -X0 -jq $@ $(src)/epub/mimetype
 	cp -r $(src)/epub/META-INF $(dir $@)
 	cd $(dir $@) && zip -rq $(notdir $@) META-INF nav.xhtml content.opf $(notdir $<)
-	cd $(dir $@) && nokogiri -e 'puts $$_.css("img").map{|i| i["src"]}' $(notdir $<) | xargs zip -jq $(notdir $@)
+	-cd $(dir $@) && nokogiri -e 'puts $$_.css("img").map{|i| i["src"]}' $(notdir $<) | xargs zip -jq $(notdir $@)
 
-%.mobi: %.html; ebook-convert $< $@ --level1-toc //h:h2 > /dev/null
-%.html: %.raw
+%.mobi: %.xhtml; ebook-convert $< $@ --level1-toc //h:h2 > /dev/null
+%.xhtml: %.raw
 	ruby $(src)/images.rb $< > $*.mk
 	$(MAKE) --no-print-directory -f $*.mk
 	ruby $(src)/raw2html.rb < $< > $@
