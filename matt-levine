@@ -17,11 +17,11 @@ rss.xml:; curl -sfL '$(rss)' > $@
 %.epub: %.xhtml
 	erb xml=$< $(src)/epub/nav.xhtml.erb > $(dir $@)/nav.xhtml
 	erb xml=$< $(src)/epub/content.opf.erb > $(dir $@)/content.opf
-	-rm $@
+	rm -f $@
 	zip -X0 -jq $@ $(src)/epub/mimetype
 	cp -r $(src)/epub/META-INF $(dir $@)
 	cd $(dir $@) && zip -rq $(notdir $@) META-INF nav.xhtml content.opf $(notdir $<)
-	-cd $(dir $@) && nokogiri -e 'puts $$_.css("img").map{|i| i["src"]}' $(notdir $<) | xargs zip -jq $(notdir $@)
+	cd $(dir $@) && nokogiri -e 'puts $$_.css("img").map{|i| i["src"]}' $(notdir $<) | xargs -r zip -jq $(notdir $@)
 
 %.mobi: %.xhtml; ebook-convert $< $@ --level1-toc //h:h2 > /dev/null
 %.xhtml: %.raw
@@ -46,6 +46,6 @@ clean:; find . -type f | grep -v '\.raw$$' | xargs -r rm
 .DELETE_ON_ERROR:
 mkdir = @mkdir -p $(dir $@)
 define send
-$(if $(catchup),,echo hello | mailx -a $< -- $(to))
+$(if $(catchup),,$(if $(to),echo hello | mailx -a $< -- $(to),$(error no to=)))
 touch $@
 endef
