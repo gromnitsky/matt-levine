@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package version="3.0" xmlns="http://www.idpf.org/2007/opf"
+         unique-identifier="bookid">
+
+<%
+  require 'time'
+  require 'securerandom'
+  require 'nokogiri'
+  doc = Nokogiri::HTML File.read xml
+%>
+
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <dc:title><%= doc.css('h1').text %></dc:title>
+    <dc:creator id="author">Matt Levine</dc:creator>
+    <dc:language>en</dc:language>
+    <dc:identifier id="bookid">urn:uuid:<%= SecureRandom.uuid %></dc:identifier>
+
+    <meta property="dcterms:modified"><%= DateTime.now.to_time.utc.iso8601 %></meta>
+    <meta refines="#author" property="file-as">Levine, Matt</meta>
+  </metadata>
+
+  <manifest>
+    <item id="article" href="<%= File.basename xml %>" media-type="application/xhtml+xml" />
+    <item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>
+  </manifest>
+
+  <spine>
+    <itemref idref="article" />
+    <itemref idref="nav" />
+  </spine>
+</package>

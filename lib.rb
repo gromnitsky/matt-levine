@@ -70,6 +70,11 @@ def bodyfix! article
   body.css('img[data-native-src]').each.with_index do |img, idx|
     img['src'] = images[idx][:file]
   end
+
+  # 5. headers
+  body.css('h2').each.with_index do |h2, idx|
+    h2['id'] = "header-#{idx}"
+  end
 end
 
 def extract_img article

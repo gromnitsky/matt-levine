@@ -18,6 +18,14 @@ ifndef catchup
 endif
 	touch $@
 
+%.epub: %.html
+	erb xml=$< $(src)/epub/nav.xhtml.erb > $(dir $@)/nav.xhtml
+	erb xml=$< $(src)/epub/content.opf.erb > $(dir $@)/content.opf
+	zip -X0 -j $@ $(src)/epub/mimetype
+	cp -r $(src)/epub/META-INF $(dir $@)
+	cd $(dir $@) && zip -r "$(CURDIR)/$@" META-INF nav.xhtml \
+		content.opf $(notdir $<)
+
 %.mobi: %.html; ebook-convert $< $@ --level1-toc //h:h2 > /dev/null
 %.html: %.raw
 	ruby $(src)/images.rb $< > $*.mk

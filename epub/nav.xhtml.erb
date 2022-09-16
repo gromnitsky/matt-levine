@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+<head>
+  <title>Contents</title>
+  <style>
+    nav { padding: 0; }
+    nav li { list-style-type: disc; }
+  </style>
+</head>
+
+<body>
+
+<%
+  require 'nokogiri'
+  doc = Nokogiri::HTML File.read xml
+%>
+
+<nav epub:type="toc">
+  <h1>Contents</h1>
+  <ol>
+    <% doc.css('h2').each.with_index do |h2,idx| %>
+    <li><a href="<%= "#{File.basename xml}#header-#{idx}" %>"><%= h2.text %></a></li>
+    <% end %>
+  </ol>
+</nav>
+
+<!-- Kindle: Menu → Go To  -->
+<nav epub:type="landmarks" style="display: none">
+  <ol>
+    <li><a epub:type="toc" href="nav.xhtml">Contents</a></li>
+  </ol>
+</nav>
+
+</body>
+</html>
