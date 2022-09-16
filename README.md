@@ -11,20 +11,21 @@ a script tag, hence this program:
 1. fetches the RSS;
 2. fetches articles;
 3. creates a proper .html file for each article;
-4. .html -> .mobi;
-5. optionally sends .mobi files to your Kindle address.
+4. .html -> .mobi/.epub;
+5. optionally sends .mobi/.epub files to your Kindle address.
 
 ## Reqs
 
 * GNU Make
-* Ruby, `gem install nokogiri`
+* Ruby 3.1+, `gem install nokogiri`
 * curl
-* Calibre (`ebook-convert` in PATH)
-* mailx (optional)
+* mobi creation: Calibre (`ebook-convert` in PATH)
+* epub creation: zip(1)
+* optionally: mailx(1)
 
 ## Usage
 
-Download a bunch of articles to create .mobi files:
+Download a bunch of articles to generate .mobi files:
 
 ~~~
 $ git clone https://github.com/gromnitsky/matt-levine
@@ -44,19 +45,23 @@ YYYY-MM-DD
 └── YYYY-MM-DD.raw
 ~~~
 
-Send a particular article to Kindle (requires mailx installed):
+Send a particular article to Kindle (requires mailx(1) installed & a
+working local MTA):
 
     ../matt-levine 2022-08-22/2022-08-22.send to=fella@example.com
 
 'Catch-up' with the articles:
 
     $ rm rss.xml
-    $ ../matt-levine catchup=1 m=send
+    $ ../matt-levine catchup=1 to=@
 
 Run this a couple times a week to detect new articles & automatically
 send *only new ones* to Kindle:
 
-    $ rm rss.xml; ../matt-levine m=send to=fella@example.com
+    $ rm rss.xml; ../matt-levine to=fella@example.com
+
+To create .epub files instead of .mobi, add `f=epub` argument. For
+help, run `../matt-levine help`.
 
 ## License
 
