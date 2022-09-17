@@ -11,8 +11,11 @@ include .articles.mk
 .articles.mk: rss.xml; ruby $(src)/articles.rb $(f) $(to) < $< > $@
 rss.xml:; curl -sfL '$(rss)' > $@
 
+ifeq ($(f),mobi)
 %.send: %.mobi; $(send)
+else
 %.send: %.epub; $(send)
+endif
 
 %.epub: %.xhtml
 	erb xml=$< $(src)/epub/nav.xhtml.erb > $(dir $@)/nav.xhtml
