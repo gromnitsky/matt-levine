@@ -8,14 +8,13 @@ src := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 all:
 include .articles.mk
 
-.articles.mk: rss.xml; ruby $(src)/articles.rb $(f) $(to) < $< > $@
+all: $(patsubst %.xhtml, %.$(f), $(xhtml))
+all: $(if $(to), $(patsubst %.xhtml, %.send, $(xhtml)))
+
+.articles.mk: rss.xml; ruby $(src)/articles.rb < $< > $@
 rss.xml:; curl -sfL '$(rss)' > $@
 
-ifeq ($(f),mobi)
-%.send: %.mobi; $(send)
-else
-%.send: %.epub; $(send)
-endif
+%.send: %.$(f); $(send)
 
 %.epub: %.xhtml
 	erb xml=$< $(src)/epub/nav.xhtml.erb > $(dir $@)/nav.xhtml
