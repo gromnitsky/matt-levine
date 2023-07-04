@@ -4,7 +4,7 @@ require 'json'
 
 def extract str
   doc = Nokogiri::HTML str
-  data = doc.css('script[data-component-props="OverlayAd"]')&.inner_html
+  data = doc.css('script[data-component-props="ArticleBody"]')&.inner_html
   raise 'no script tag' if data.size == 0
 
   article = JSON.parse data
@@ -17,6 +17,7 @@ def extract str
   url = "https://www.bloomberg.com" + url
   body = article.dig("story", "body") || raise('no body')
 
+  summary = Nokogiri::HTML.fragment(summary)
   { author:, date:, title:, summary:, url:, body: Nokogiri::HTML.fragment(body)}
 end
 

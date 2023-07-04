@@ -3,7 +3,7 @@
 abort "Usage: #{$0} file.raw" unless ARGV[0]
 
 require_relative './lib'
-article = extract File.read ARGV[0] rescue abort($!)
+article = extract File.read ARGV[0]
 images = extract_img(article)
 
 def target file; File.join File.dirname(ARGV[0]), file; end

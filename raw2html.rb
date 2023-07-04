@@ -20,7 +20,7 @@ puts <<END
 
 <body>
 <h1>#{article[:title]}</h1>
-<div class="lead">#{article[:summary]}</div>
+<div class="lead">#{article[:summary].to_xml}</div>
 <p class="author"><time datetime="#{article[:date]}">#{article[:date]}</time>, #{article[:author]}</p>
 
 #{article[:body].to_xml}
