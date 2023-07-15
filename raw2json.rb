@@ -2,12 +2,13 @@ require 'nokogiri'
 require 'date'
 require 'json'
 
-def extract str
-  doc = Nokogiri::HTML str
+def extract file
+  doc = Nokogiri::HTML File.read file
   data = doc.css('script#__NEXT_DATA__')&.inner_html
   raise 'no script tag' if data.size == 0
   data = JSON.parse data
-  IO.write '1.json', data.to_json
+
+  IO.write("#{file}.DEBUG.json", data.to_json) if ENV["DEBUG"]
 
   article = data.dig("props", "pageProps")
   author = article.dig("story", "authors", 0, "name") || raise('no author')
@@ -68,7 +69,8 @@ def cnt_parse data
       r.push "</h#{level}>"
 
     when "link"
-      href = chunk.dig("data", "href") || raise('invalid link')
+      href = chunk.dig("data", "data-web-url") ||
+             chunk.dig("data", "href") || raise('invalid link')
       r.push "<a href='#{href}'>"
       # RECURSION
       r.push cnt_parse chunk["content"]
@@ -118,6 +120,9 @@ def cnt_parse data
       ext = File.extname photo["src"]
       r.push "<img data-src='#{photo["src"]}' alt='#{photo["alt"]}' src='#{photo["id"]}#{ext}'>"
 
+    when "br"
+      r.push "<br>"
+
     # junk
     when "inline-recirc"
     when "inline-newsletter"
@@ -130,4 +135,4 @@ def cnt_parse data
   r.flatten
 end
 
-puts extract(File.read ARGV[0]).to_json
+puts extract(ARGV[0]).to_json
