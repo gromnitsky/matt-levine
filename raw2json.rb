@@ -22,7 +22,6 @@ def extract file
   summary = Nokogiri::HTML.fragment(summary)
 
   url = article.dig("story", "url") || raise('no url')
-  url = "https://www.bloomberg.com" + url
 
   body = article.dig("story", "body") || raise('no body')
   body = cnt_parse body["content"]
