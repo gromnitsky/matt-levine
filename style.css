@@ -23,6 +23,8 @@ img {
   max-width: 100%;
 }
 
+div.footnote { margin: 1em 0; }
+
 /* epub */
 
 p:not([class]) {

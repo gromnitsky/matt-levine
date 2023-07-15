@@ -83,11 +83,10 @@ def cnt_parse data
 
     when "footnote"
       id = chunk.dig("data", "identifier") || raise('invalid footnote')
-#      number = footnote_number id
-      r.push "<li id='#{id}'>"
+      r.push "<div class='footnote' id='#{id}'>"
       # RECURSION
       r.push cnt_parse chunk["content"]
-      r.push "</li>"
+      r.push "</div>"
 
     when "entity"
       href = chunk.dig("data", "link", "destination", "web") || raise("invalid entity (a link to another bloomberg article): #{chunk}")

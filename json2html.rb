@@ -6,7 +6,11 @@ require_relative './lib'
 article = JSON.parse File.read ARGV[0]
 article["summary"] = Nokogiri::HTML.fragment article["summary"]
 article["body"] = Nokogiri::HTML.fragment article["body"]
+
 article["footnotes"] = Nokogiri::HTML.fragment article["footnotes"]
+article["footnotes"].css('div.footnote > p:first-child').each.with_index do |node, idx|
+  node.prepend_child "#{idx+1}. "
+end
 
 puts <<END
 <?xml version="1.0" encoding="utf-8"?>
@@ -30,9 +34,7 @@ puts <<END
 #{article["body"].to_xml}
 
 <h2 id="article_footnotes">Footnotes</h2>
-<ol>
 #{article["footnotes"].to_xml}
-</ol>
 
 <footer>
 <hr />
