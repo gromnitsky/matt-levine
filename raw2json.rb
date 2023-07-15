@@ -7,7 +7,7 @@ def extract str
   data = doc.css('script#__NEXT_DATA__')&.inner_html
   raise 'no script tag' if data.size == 0
   data = JSON.parse data
-#  IO.write '1.json', data.to_json
+  IO.write '1.json', data.to_json
 
   article = data.dig("props", "pageProps")
   author = article.dig("story", "authors", 0, "name") || raise('no author')
@@ -60,9 +60,11 @@ def cnt_parse data
 
     when "heading"
       level = chunk.dig("data", "level") || raise('invalid heading level')
-      r.push "<h#{level}>"
       # RECURSION
-      r.push cnt_parse chunk["content"]
+      text = cnt_parse chunk["content"]
+      id = text.join("").gsub(/[^A-Za-z0-9_-]/, '_')
+      r.push "<h#{level} id='#{id}'>"
+      r.push text
       r.push "</h#{level}>"
 
     when "link"
