@@ -31,7 +31,7 @@ rss.xml:; curl -sfL '$(rss)' > $@
 	ruby $(src)/raw2json.rb $< > $@
 
 %.xhtml: %.json
-	ruby $(src)/json2html.rb $< > $@
+	ruby $(src)/json2xhtml.rb $< > $@
 	ruby $(src)/images.rb $@ > $*.mk
 	$(MAKE) --no-print-directory -f $*.mk
 

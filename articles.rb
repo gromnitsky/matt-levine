@@ -14,7 +14,7 @@ end
 def target(item, ext) = item[:date] + "/" + item[:date] + ext
 
 puts <<END
-curl := curl -sfL -H 'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36'
+curl := curl -sfL -H 'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36'
 xhtml := #{items.map {|v| target v, '.xhtml' }.join(' ')}
 all: $(xhtml)
 END

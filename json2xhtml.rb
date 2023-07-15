@@ -3,6 +3,8 @@ require 'nokogiri'
 require 'date'
 require_relative './lib'
 
+abort "Usage: #{$0} file.json" unless ARGV[0]
+
 article = JSON.parse File.read ARGV[0]
 article["summary"] = Nokogiri::HTML.fragment article["summary"]
 article["body"] = Nokogiri::HTML.fragment article["body"]
@@ -41,7 +43,13 @@ puts <<END
 <dl>
 <dt>Source:</dt><dd><a href="#{article["url"]}">#{article["url"]}</a></dd>
 <dt>Generated:</dt><dd>#{DateTime.now}</dd>
-<dt>Generator environment:</dt><dd>#{e RUBY_DESCRIPTION}</dd>
+<dt>Generator environment:</dt>
+<dd>
+ <ul>
+ <li>#{`uname -a`}</li>
+ <li>#{e RUBY_DESCRIPTION}</li>
+ </ul>
+</dd>
 </dl>
 </footer>
 

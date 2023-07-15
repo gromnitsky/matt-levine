@@ -18,6 +18,8 @@ footer {
 
 dt { font-style: italic; }
 
+dd > ul { margin: 0; }
+
 img {
   margin: 1em 0;
   max-width: 100%;
