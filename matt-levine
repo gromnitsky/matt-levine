@@ -26,10 +26,14 @@ rss.xml:; curl -sfL '$(rss)' > $@
 	cd $(dir $@) && nokogiri -e 'puts $$_.css("img").map{|i| i["src"]}' $(notdir $<) | xargs -r zip -jq $(notdir $@)
 
 %.mobi: %.xhtml; ebook-convert $< $@ --level1-toc //h:h2 > /dev/null
-%.xhtml: %.raw
-	ruby $(src)/images.rb $< > $*.mk
+
+%.json: %.raw
+	ruby $(src)/raw2json.rb $< > $@
+
+%.xhtml: %.json
+	ruby $(src)/json2html.rb $< > $@
+	ruby $(src)/images.rb $@ > $*.mk
 	$(MAKE) --no-print-directory -f $*.mk
-	ruby $(src)/raw2html.rb < $< > $@
 
 define help :=
 To check for new articles, rm rss.xml

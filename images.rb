@@ -1,10 +1,13 @@
 # generates a makefile for downloading all images for a single article
 
-abort "Usage: #{$0} file.raw" unless ARGV[0]
+require 'nokogiri'
 
-require_relative './lib'
-article = extract File.read ARGV[0]
-images = extract_img(article)
+abort "Usage: #{$0} file.xhtml" unless ARGV[0]
+
+doc = Nokogiri::XML File.read ARGV[0]
+images = doc.css('img[data-src]').map do |img|
+  { url: img['data-src'], file: img['src'] }
+end
 
 def target file; File.join File.dirname(ARGV[0]), file; end
 
