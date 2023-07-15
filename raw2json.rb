@@ -26,7 +26,8 @@ def extract file
   body = article.dig("story", "body") || raise('no body')
   body = cnt_parse body["content"]
 
-  footnotes = data.dig("props", "pageProps", "story", "footnotes", "content")&.first&.dig("content") || []
+  footnotes = data.dig("props", "pageProps", "story", "footnotes", "content",
+                       0, "content") || []
   footnotes = cnt_parse footnotes
 
   {
@@ -52,11 +53,12 @@ def cnt_parse data
 
     when "text"
       attrs = chunk["attributes"]
-      r.push "<b>" if attrs&.dig("strong")
-      r.push "<i>" if attrs&.dig("emphasis")
+      i, b = attrs&.values_at("emphasis", "strong")
+      r.push "<b>" if b
+      r.push "<i>" if i
       r.push chunk["value"]
-      r.push "</b>" if attrs&.dig("strong")
-      r.push "</i>" if attrs&.dig("emphasis")
+      r.push "</b>" if b
+      r.push "</i>" if i
 
     when "heading"
       level = chunk.dig("data", "level") || raise('invalid heading level')
