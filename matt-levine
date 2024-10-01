@@ -52,6 +52,6 @@ clean:; find . -type f | grep -v '\.raw$$' | xargs -r rm
 .DELETE_ON_ERROR:
 mkdir = @mkdir -p $(dir $@)
 define send
-$(if $(catchup),,$(if $(to),echo hello | mailx -a $< -- $(to),$(error no to=)))
+$(if $(catchup),,$(if $(to),echo hello | mailx -a $< $(to),$(error no to=)))
 touch $@
 endef
