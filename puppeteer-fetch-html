@@ -1,0 +1,32 @@
+#!/usr/bin/env node
+
+let puppeteer = require('puppeteer')
+
+async function download(url) {
+    let browser = await puppeteer.launch()
+    let page = await browser.newPage()
+
+    await page.emulateMediaType('screen')
+    await page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36')
+
+    await page.setRequestInterception(true)
+    page.on('request', req => {
+        // ignore all except html
+        req[req.resourceType() === 'document' ? 'continue' : 'abort']()
+    })
+
+    try {
+        await page.goto(url, { waitUntil: 'networkidle2' })
+        console.log(await page.content())
+    } catch(e) {
+        err('Error:', e.message)
+    }
+    await browser.close()
+}
+
+function err(...msg) { console.error(...msg); process.exit(1) }
+
+let url = process.argv[2]
+if (!url) err('Usage: puppeteer-fetch-html url')
+
+download(url)

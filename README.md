@@ -18,6 +18,7 @@ a script tag, hence this program:
 
 * GNU Make
 * Ruby 3.1+, `gem install nokogiri`
+* `npm i puppeteer`
 * curl
 * mobi creation: Calibre (`ebook-convert` in PATH)
 * epub creation: zip(1)
