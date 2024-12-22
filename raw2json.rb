@@ -90,7 +90,9 @@ def cnt_parse data
       r.push "</div>"
 
     when "entity"
-      href = chunk.dig("data", "link", "destination", "web") || raise("invalid entity (a link to another bloomberg article): #{chunk}")
+      href = chunk.dig("data", "link", "destination", "web") ||
+             chunk.dig("data", "link", "destination", "bbg") ||
+             raise("invalid entity (a link to another bloomberg article): #{chunk}")
       r.push "<a href='#{href}'>"
       # RECURSION
       r.push cnt_parse chunk["content"]
