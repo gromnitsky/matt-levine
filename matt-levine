@@ -1,6 +1,6 @@
 #!/usr/bin/env -S make -f
 
-f := mobi
+f := epub
 to :=
 rss := https://www.bloomberg.com/opinion/authors/ARbTQlRLRjE/matthew-s-levine.rss
 src := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))

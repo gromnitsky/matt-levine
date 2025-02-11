@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
 let puppeteer = require('puppeteer')
+let fs = require('fs')
 
-async function download(url) {
+async function download(url, cookies) {
     let browser = await puppeteer.launch()
     let page = await browser.newPage()
 
@@ -11,8 +12,15 @@ async function download(url) {
 
     await page.setRequestInterception(true)
     page.on('request', req => {
+        let headers = Object.assign({}, req.headers())
+        if (cookies) headers.cookie = cookies
+
         // ignore all except html
-        req[req.resourceType() === 'document' ? 'continue' : 'abort']()
+        if (req.resourceType() === 'document') {
+            req.continue({headers})
+        } else {
+            req.abort()
+        }
     })
 
     try {
@@ -29,4 +37,9 @@ function err(...msg) { console.error(...msg); process.exit(1) }
 let url = process.argv[2]
 if (!url) err('Usage: puppeteer-fetch-html url')
 
-download(url)
+let cookies
+try {
+    cookies = fs.readFileSync('fetch.txt').toString().split("\n")?.filter( v => /\s*"cookie":/.test(v))?.[0]?.split('"')?.filter(v => v.includes('='))[0]; //
+} catch (_) { /* do nothing */ }
+
+download(url, cookies)

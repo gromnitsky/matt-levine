@@ -2,7 +2,7 @@
 
 Read Matt Levine's Bloomberg column (ARbTQlRLRjE) on Kindle.
 
-<img style="width: 100%" src="https://sigwait.tk/~alex/junk/matt-levine.ss.gif">
+<img style="width: 100%" src="https://sigwait.org/~alex/junk/matt-levine.ss.gif">
 
 Bloomberg RSS feeds contain no articles themselves, only links; raw
 html doesn't contain article text either--Bloomberg 'hides' it inside
@@ -26,7 +26,7 @@ a script tag, hence this program:
 
 ## Usage
 
-Download a bunch of articles to generate .mobi files:
+Download a bunch of articles to generate .epub files:
 
 ~~~
 $ git clone https://github.com/gromnitsky/matt-levine
@@ -41,9 +41,9 @@ This creates multiple directories like so:
 
 ~~~
 YYYY-MM-DD
-├── YYYY-MM-DD.html
-├── YYYY-MM-DD.mobi
-└── YYYY-MM-DD.raw
+├── YYYY-MM-DD.epub
+├── YYYY-MM-DD.raw
+└── YYYY-MM-DD.xhtml
 ~~~
 
 Send a particular article to Kindle (requires mailx(1) installed & a
@@ -61,8 +61,22 @@ send *only new ones* to Kindle:
 
     $ rm rss.xml; ../matt-levine to=fella@example.com
 
-To create .epub files instead of .mobi, add `f=epub` argument. For
+To create .mobi files instead of .epub, add `f=mobi` argument. For
 help, run `../matt-levine help`.
+
+## Combat captcha
+
+If you get 'invalid responce' message instead of raw html:
+
+1. open 'New Incognito Window' in Chrome;
+2. press F12, switch to `Network` tab;
+3. load the url;
+4. solve a captcha;
+5. scroll to the very 1st url in devtools `Network` tab (status: 200,
+   type: document);
+6. right-click, select `Copy` -> `Copy as fetch (Node.js)`;
+7. paste the value into `fetch.txt` file. The file must be in the
+   same dir you run 'matt-levine' command from.
 
 ## License
 
