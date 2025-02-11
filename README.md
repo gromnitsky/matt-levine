@@ -66,7 +66,7 @@ help, run `../matt-levine help`.
 
 ## Combat captcha
 
-If you get 'invalid responce' message instead of raw html:
+If you get "invalid response" message instead of raw html:
 
 1. open 'New Incognito Window' in Chrome;
 2. press F12, switch to `Network` tab;
