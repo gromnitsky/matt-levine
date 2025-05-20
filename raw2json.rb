@@ -98,7 +98,7 @@ def cnt_parse data
       r.push cnt_parse chunk["content"]
       r.push "</a>"
 
-    when "quote"
+    when "quote", "blockquote"
       r.push "<blockquote>"
       # RECURSION
       r.push cnt_parse chunk["content"]
